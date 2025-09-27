@@ -1,0 +1,32 @@
+# Server configuration
+server:
+  host: "0.0.0.0"
+  port: 8080
+  read_timeout: 30        # seconds
+  write_timeout: 30       # seconds
+  idle_timeout: 120       # seconds
+  shutdown_timeout: 30    # seconds
+  prefork: false          # enable for production
+
+# Data configuration
+data:
+  reviews_path: "data/siteReviews.json"
+  predictions_path: "data/reviews.json"
+
+# Logger configuration
+logger:
+  level: "info"           # debug, info, warn, error
+  format: "console"       # console, json
+  output_path: ""         # empty for stdout only, or specify file path like "logs/app.log"
+
+# Database configuration (for future use)
+database:
+  driver: "postgres"
+  host: "localhost"
+  port: 5432
+  name: "reviews_db"
+  user: "postgres"
+  password: ""
+  max_open_conns: 25
+  max_idle_conns: 5
+  conn_max_lifetime: 5    # minutes

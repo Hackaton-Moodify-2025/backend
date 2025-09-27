@@ -1,0 +1,17 @@
+{"level":"info","timestamp":"2025-09-27T01:10:42.082Z","caller":"server/main.go:43","msg":"Starting reviews backend server..."}
+{"level":"info","timestamp":"2025-09-27T01:10:42.083Z","caller":"server/main.go:44","msg":"Server will listen on 0.0.0.0:8080"}
+{"level":"info","timestamp":"2025-09-27T01:10:42.083Z","caller":"server/main.go:78","msg":"Server started successfully"}
+{"level":"info","timestamp":"2025-09-27T01:10:48.960Z","caller":"service/review_service.go:89","msg":"Getting analytics data"}
+{"level":"info","timestamp":"2025-09-27T01:10:49.228Z","caller":"service/review_service.go:105","msg":"Successfully retrieved analytics data","reviews_count":14410,"predictions_count":14410}
+{"level":"info","timestamp":"2025-09-27T01:10:49.345Z","caller":"middleware/logger.go:31","msg":"GET /api/v1/analytics - 200 (385ms)","user_agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 YaBrowser/25.8.0.0 Safari/537.36","size":36519148,"method":"GET","path":"/api/v1/analytics","status":200,"duration":385,"ip":"192.168.65.1"}
+{"level":"info","timestamp":"2025-09-27T01:10:49.472Z","caller":"service/review_service.go:89","msg":"Getting analytics data"}
+{"level":"info","timestamp":"2025-09-27T01:10:49.473Z","caller":"service/review_service.go:105","msg":"Successfully retrieved analytics data","reviews_count":14410,"predictions_count":14410}
+{"level":"info","timestamp":"2025-09-27T01:10:49.582Z","caller":"middleware/logger.go:31","msg":"GET /api/v1/analytics - 200 (110ms)","size":36519148,"method":"GET","path":"/api/v1/analytics","status":200,"duration":110,"ip":"192.168.65.1","user_agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 YaBrowser/25.8.0.0 Safari/537.36"}
+{"level":"info","timestamp":"2025-09-27T01:11:08.750Z","caller":"service/review_service.go:52","msg":"Getting paginated reviews","offset":0,"page":1,"limit":20,"topic":"","sentiment":""}
+{"level":"info","timestamp":"2025-09-27T01:11:08.752Z","caller":"service/review_service.go:82","msg":"Successfully retrieved paginated reviews","total_reviews":14410,"returned":20,"total_pages":721}
+{"level":"info","timestamp":"2025-09-27T01:11:08.752Z","caller":"middleware/logger.go:31","msg":"GET /api/v1/reviews - 200 (2ms)","method":"GET","path":"/api/v1/reviews","status":200,"duration":2,"ip":"192.168.65.1","user_agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 YaBrowser/25.8.0.0 Safari/537.36","size":69606}
+{"level":"info","timestamp":"2025-09-27T01:11:08.753Z","caller":"service/review_service.go:52","msg":"Getting paginated reviews","sentiment":"","offset":0,"page":1,"limit":20,"topic":""}
+{"level":"info","timestamp":"2025-09-27T01:11:08.755Z","caller":"service/review_service.go:82","msg":"Successfully retrieved paginated reviews","total_reviews":14410,"returned":20,"total_pages":721}
+{"level":"info","timestamp":"2025-09-27T01:11:08.755Z","caller":"middleware/logger.go:31","msg":"GET /api/v1/reviews - 200 (2ms)","size":69606,"method":"GET","path":"/api/v1/reviews","status":200,"duration":2,"ip":"192.168.65.1","user_agent":"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 YaBrowser/25.8.0.0 Safari/537.36"}
+{"level":"info","timestamp":"2025-09-27T01:11:43.880Z","caller":"server/main.go:85","msg":"Received shutdown signal, shutting down gracefully..."}
+{"level":"info","timestamp":"2025-09-27T01:11:43.980Z","caller":"server/main.go:94","msg":"Server shutdown completed"}

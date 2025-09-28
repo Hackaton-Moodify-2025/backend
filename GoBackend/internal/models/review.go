@@ -4,16 +4,16 @@ import "time"
 
 // Review represents a single review from the site
 type Review struct {
-	ID       int       `json:"id"`
-	Link     string    `json:"link"`
-	Date     string    `json:"date"`
-	Title    string    `json:"title"`
-	Text     string    `json:"text"`
-	Rating   string    `json:"rating"`
-	Status   *string   `json:"status"`
-	Product  *string   `json:"product"`
-	City     string    `json:"city"`
-	Topics   []string  `json:"topics,omitempty"`
+	ID         int      `json:"id"`
+	Link       string   `json:"link"`
+	Date       string   `json:"date"`
+	Title      string   `json:"title"`
+	Text       string   `json:"text"`
+	Rating     string   `json:"rating"`
+	Status     *string  `json:"status"`
+	Product    *string  `json:"product"`
+	City       string   `json:"city"`
+	Topics     []string `json:"topics,omitempty"`
 	Sentiments []string `json:"sentiments,omitempty"`
 }
 
@@ -51,6 +51,16 @@ type ReviewsRequest struct {
 	Limit     int    `form:"limit" json:"limit"`
 	Topic     string `form:"topic" json:"topic"`
 	Sentiment string `form:"sentiment" json:"sentiment"`
+	DateFrom  string `form:"date_from" json:"date_from"` // Формат: YYYY-MM-DD
+	DateTo    string `form:"date_to" json:"date_to"`     // Формат: YYYY-MM-DD
+}
+
+// AnalyticsRequest represents request parameters for getting analytics data
+type AnalyticsRequest struct {
+	Topic     string `form:"topic" json:"topic"`
+	Sentiment string `form:"sentiment" json:"sentiment"`
+	DateFrom  string `form:"date_from" json:"date_from"` // Формат: YYYY-MM-DD
+	DateTo    string `form:"date_to" json:"date_to"`     // Формат: YYYY-MM-DD
 }
 
 // ErrorResponse represents API error response

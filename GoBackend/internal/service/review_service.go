@@ -1,6 +1,5 @@
 package service
 
-
 import (
 	"context"
 	"fmt"
@@ -15,6 +14,7 @@ import (
 type ReviewService interface {
 	GetPaginatedReviews(ctx context.Context, req models.ReviewsRequest) (*models.PaginatedReviews, error)
 	GetAnalyticsData(ctx context.Context) (*models.AnalyticsData, error)
+	GetFilteredAnalyticsData(ctx context.Context, req models.AnalyticsRequest) (*models.AnalyticsData, error)
 }
 
 // ReviewServiceImpl implements ReviewService
@@ -52,14 +52,14 @@ func (s *ReviewServiceImpl) GetPaginatedReviews(ctx context.Context, req models.
 	}).Info("Getting paginated reviews")
 
 	// Get total count
-	total, err := s.repo.GetTotalReviews(req.Topic, req.Sentiment)
+	total, err := s.repo.GetTotalReviews(req.Topic, req.Sentiment, req.DateFrom, req.DateTo)
 	if err != nil {
 		s.logger.WithError(err).Error("Failed to get total reviews count")
 		return nil, fmt.Errorf("failed to get total reviews count: %w", err)
 	}
 
 	// Get reviews
-	reviews, err := s.repo.GetReviews(offset, req.Limit, req.Topic, req.Sentiment)
+	reviews, err := s.repo.GetReviews(offset, req.Limit, req.Topic, req.Sentiment, req.DateFrom, req.DateTo)
 	if err != nil {
 		s.logger.WithError(err).Error("Failed to get reviews")
 		return nil, fmt.Errorf("failed to get reviews: %w", err)
@@ -103,6 +103,34 @@ func (s *ReviewServiceImpl) GetAnalyticsData(ctx context.Context) (*models.Analy
 		"reviews_count":     len(reviews),
 		"predictions_count": len(predictions),
 	}).Info("Successfully retrieved analytics data")
+
+	return result, nil
+}
+
+// GetFilteredAnalyticsData returns filtered data for analytics
+func (s *ReviewServiceImpl) GetFilteredAnalyticsData(ctx context.Context, req models.AnalyticsRequest) (*models.AnalyticsData, error) {
+	s.logger.WithFields(map[string]interface{}{
+		"topic":     req.Topic,
+		"sentiment": req.Sentiment,
+		"date_from": req.DateFrom,
+		"date_to":   req.DateTo,
+	}).Info("Getting filtered analytics data")
+
+	reviews, predictions, err := s.repo.GetFilteredReviewsForAnalytics(req.Topic, req.Sentiment, req.DateFrom, req.DateTo)
+	if err != nil {
+		s.logger.WithError(err).Error("Failed to get filtered analytics data")
+		return nil, fmt.Errorf("failed to get filtered analytics data: %w", err)
+	}
+
+	result := &models.AnalyticsData{
+		Reviews:     reviews,
+		Predictions: predictions,
+	}
+
+	s.logger.WithFields(map[string]interface{}{
+		"reviews_count":     len(reviews),
+		"predictions_count": len(predictions),
+	}).Info("Successfully retrieved filtered analytics data")
 
 	return result, nil
 }

@@ -16,6 +16,7 @@ type ReviewRepository interface {
 	GetTotalReviews(topic, sentiment, dateFrom, dateTo string) (int, error)
 	GetAllReviewsForAnalytics() ([]models.Review, []models.ReviewPrediction, error)
 	GetFilteredReviewsForAnalytics(topic, sentiment, dateFrom, dateTo string) ([]models.Review, []models.ReviewPrediction, error)
+	GetReviewByID(id int) (*models.Review, error)
 }
 
 // JSONReviewRepository implements ReviewRepository using JSON files
@@ -275,4 +276,35 @@ func (r *JSONReviewRepository) matchesFilter(review models.Review, topic, sentim
 	}
 
 	return true
+}
+
+// GetReviewByID returns a single review by ID
+func (r *JSONReviewRepository) GetReviewByID(id int) (*models.Review, error) {
+	if err := r.loadData(); err != nil {
+		return nil, err
+	}
+
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+
+	// Search for review in the main reviews data
+	for _, review := range r.reviews {
+		if review.ID == id {
+			// Find matching prediction data
+			for _, prediction := range r.predictions {
+				if prediction.ID == id {
+					// Merge review and prediction data
+					mergedReview := review
+					mergedReview.Topics = prediction.Topics
+					mergedReview.Sentiments = prediction.Sentiments
+					return &mergedReview, nil
+				}
+			}
+			// Return review even if no prediction data found
+			return &review, nil
+		}
+	}
+
+	// Review not found
+	return nil, nil
 }

@@ -150,6 +150,7 @@ func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler) {
 	
 	// Reviews routes
 	api.Get("/reviews", reviewHandler.GetReviews)
+	api.Get("/reviews/:id", reviewHandler.GetReviewByID)
 	api.Get("/analytics", reviewHandler.GetAnalytics)
 
 	// Catch-all for 404

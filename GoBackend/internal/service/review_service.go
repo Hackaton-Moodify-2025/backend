@@ -15,6 +15,7 @@ type ReviewService interface {
 	GetPaginatedReviews(ctx context.Context, req models.ReviewsRequest) (*models.PaginatedReviews, error)
 	GetAnalyticsData(ctx context.Context) (*models.AnalyticsData, error)
 	GetFilteredAnalyticsData(ctx context.Context, req models.AnalyticsRequest) (*models.AnalyticsData, error)
+	GetReviewByID(ctx context.Context, id int) (*models.Review, error)
 }
 
 // ReviewServiceImpl implements ReviewService
@@ -133,4 +134,32 @@ func (s *ReviewServiceImpl) GetFilteredAnalyticsData(ctx context.Context, req mo
 	}).Info("Successfully retrieved filtered analytics data")
 
 	return result, nil
+}
+
+// GetReviewByID returns a single review by ID
+func (s *ReviewServiceImpl) GetReviewByID(ctx context.Context, id int) (*models.Review, error) {
+	s.logger.WithFields(map[string]interface{}{
+		"review_id": id,
+	}).Info("Getting review by ID")
+
+	review, err := s.repo.GetReviewByID(id)
+	if err != nil {
+		s.logger.WithError(err).WithFields(map[string]interface{}{
+			"review_id": id,
+		}).Error("Failed to get review by ID")
+		return nil, fmt.Errorf("failed to get review by ID: %w", err)
+	}
+
+	if review == nil {
+		s.logger.WithFields(map[string]interface{}{
+			"review_id": id,
+		}).Warn("Review not found")
+		return nil, fmt.Errorf("review with ID %d not found", id)
+	}
+
+	s.logger.WithFields(map[string]interface{}{
+		"review_id": id,
+	}).Info("Successfully retrieved review by ID")
+
+	return review, nil
 }

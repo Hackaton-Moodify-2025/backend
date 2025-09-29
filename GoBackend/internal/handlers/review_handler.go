@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"time"
 
@@ -56,6 +57,41 @@ func (h *ReviewHandler) GetReviews(c fiber.Ctx) error {
 	}
 
 	return c.JSON(result)
+}
+
+// GetReviewByID handles GET /api/reviews/:id
+func (h *ReviewHandler) GetReviewByID(c fiber.Ctx) error {
+	// Parse ID parameter
+	idParam := c.Params("id")
+	id, err := strconv.Atoi(idParam)
+	if err != nil {
+		h.logger.WithError(err).Errorf("Invalid review ID: %s", idParam)
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error:   "invalid_id",
+			Message: "Invalid review ID format",
+		})
+	}
+
+	// Get review by ID
+	review, err := h.service.GetReviewByID(context.Background(), id)
+	if err != nil {
+		h.logger.WithError(err).Errorf("Failed to get review by ID: %d", id)
+		
+		// Check if it's a "not found" error
+		if err.Error() == fmt.Sprintf("review with ID %d not found", id) {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error:   "review_not_found",
+				Message: fmt.Sprintf("Review with ID %d not found", id),
+			})
+		}
+		
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error:   "internal_error",
+			Message: "Failed to get review",
+		})
+	}
+
+	return c.JSON(review)
 }
 
 // GetAnalytics handles GET /api/analytics

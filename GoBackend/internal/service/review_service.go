@@ -87,7 +87,7 @@ func (s *ReviewServiceImpl) GetPaginatedReviews(ctx context.Context, req models.
 
 // GetAnalyticsData returns all data needed for analytics
 func (s *ReviewServiceImpl) GetAnalyticsData(ctx context.Context) (*models.AnalyticsData, error) {
-	s.logger.Info("Getting analytics data")
+	s.logger.Info("Getting analytics data (excluding otzovik.com - only sravni.ru and banki.ru)")
 
 	reviews, predictions, err := s.repo.GetAllReviewsForAnalytics()
 	if err != nil {
@@ -103,6 +103,7 @@ func (s *ReviewServiceImpl) GetAnalyticsData(ctx context.Context) (*models.Analy
 	s.logger.WithFields(map[string]interface{}{
 		"reviews_count":     len(reviews),
 		"predictions_count": len(predictions),
+		"source_filter":     "sravni.ru,banki.ru only",
 	}).Info("Successfully retrieved analytics data")
 
 	return result, nil
@@ -115,7 +116,7 @@ func (s *ReviewServiceImpl) GetFilteredAnalyticsData(ctx context.Context, req mo
 		"sentiment": req.Sentiment,
 		"date_from": req.DateFrom,
 		"date_to":   req.DateTo,
-	}).Info("Getting filtered analytics data")
+	}).Info("Getting filtered analytics data (excluding otzovik.com - only sravni.ru and banki.ru)")
 
 	reviews, predictions, err := s.repo.GetFilteredReviewsForAnalytics(req.Topic, req.Sentiment, req.DateFrom, req.DateTo)
 	if err != nil {
@@ -131,6 +132,7 @@ func (s *ReviewServiceImpl) GetFilteredAnalyticsData(ctx context.Context, req mo
 	s.logger.WithFields(map[string]interface{}{
 		"reviews_count":     len(reviews),
 		"predictions_count": len(predictions),
+		"source_filter":     "sravni.ru,banki.ru only",
 	}).Info("Successfully retrieved filtered analytics data")
 
 	return result, nil

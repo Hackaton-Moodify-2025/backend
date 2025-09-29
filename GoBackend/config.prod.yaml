@@ -17,13 +17,3 @@ logger:
   format: "json"
   output_path: "logs/app.log"
 
-database:
-  driver: "postgres"
-  host: "db"
-  port: 5432
-  name: "reviews_db"
-  user: "postgres"
-  password: "${DB_PASSWORD}"
-  max_open_conns: 25
-  max_idle_conns: 5
-  conn_max_lifetime: 5

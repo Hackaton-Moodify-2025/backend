@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -173,6 +174,7 @@ func (r *JSONReviewRepository) GetTotalReviews(topic, sentiment, dateFrom, dateT
 }
 
 // GetAllReviewsForAnalytics returns all reviews and predictions for analytics
+// Excludes otzovik.com sources - only includes sravni.ru and banki.ru for analytics dashboard
 func (r *JSONReviewRepository) GetAllReviewsForAnalytics() ([]models.Review, []models.ReviewPrediction, error) {
 	if err := r.loadData(); err != nil {
 		return nil, nil, err
@@ -181,17 +183,32 @@ func (r *JSONReviewRepository) GetAllReviewsForAnalytics() ([]models.Review, []m
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	// Return copies to avoid data races
-	reviews := make([]models.Review, len(r.reviews))
-	copy(reviews, r.reviews)
+	// Filter reviews to exclude otzovik.com for analytics
+	var filteredReviews []models.Review
+	for _, review := range r.reviews {
+		if r.isAllowedSourceForAnalytics(review.Link) {
+			filteredReviews = append(filteredReviews, review)
+		}
+	}
 
-	predictions := make([]models.ReviewPrediction, len(r.predictions))
-	copy(predictions, r.predictions)
+	// Filter predictions to match filtered reviews
+	reviewIDs := make(map[int]bool)
+	for _, review := range filteredReviews {
+		reviewIDs[review.ID] = true
+	}
 
-	return reviews, predictions, nil
+	var filteredPredictions []models.ReviewPrediction
+	for _, prediction := range r.predictions {
+		if reviewIDs[prediction.ID] {
+			filteredPredictions = append(filteredPredictions, prediction)
+		}
+	}
+
+	return filteredReviews, filteredPredictions, nil
 }
 
 // GetFilteredReviewsForAnalytics returns filtered reviews and predictions for analytics
+// Excludes otzovik.com sources - only includes sravni.ru and banki.ru for analytics dashboard
 func (r *JSONReviewRepository) GetFilteredReviewsForAnalytics(topic, sentiment, dateFrom, dateTo string) ([]models.Review, []models.ReviewPrediction, error) {
 	if err := r.loadData(); err != nil {
 		return nil, nil, err
@@ -200,10 +217,11 @@ func (r *JSONReviewRepository) GetFilteredReviewsForAnalytics(topic, sentiment, 
 	r.mu.RLock()
 	defer r.mu.RUnlock()
 
-	// Filter reviews
+	// Filter reviews - exclude otzovik.com for analytics
 	var filteredReviews []models.Review
 	for _, review := range r.reviews {
-		if r.matchesFilter(review, topic, sentiment, dateFrom, dateTo) {
+		// Only include sravni.ru and banki.ru sources for analytics
+		if r.isAllowedSourceForAnalytics(review.Link) && r.matchesFilter(review, topic, sentiment, dateFrom, dateTo) {
 			filteredReviews = append(filteredReviews, review)
 		}
 	}
@@ -307,4 +325,24 @@ func (r *JSONReviewRepository) GetReviewByID(id int) (*models.Review, error) {
 
 	// Review not found
 	return nil, nil
+}
+
+// isAllowedSourceForAnalytics checks if the review source is allowed for analytics dashboard
+// Only sravni.ru and banki.ru sources are allowed - excludes otzovik.com
+func (r *JSONReviewRepository) isAllowedSourceForAnalytics(link string) bool {
+	// Check if the link contains allowed sources for analytics dashboard
+	// This ensures analytics dashboard only shows data from sravni and banki
+	allowedSources := []string{
+		"sravni.ru",
+		"banki.ru",
+	}
+
+	for _, source := range allowedSources {
+		if strings.Contains(link, source) {
+			return true
+		}
+	}
+
+	// Exclude otzovik.com and any other sources
+	return false
 }

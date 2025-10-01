@@ -76,7 +76,7 @@ func (h *ReviewHandler) GetReviewByID(c fiber.Ctx) error {
 	review, err := h.service.GetReviewByID(context.Background(), id)
 	if err != nil {
 		h.logger.WithError(err).Errorf("Failed to get review by ID: %d", id)
-		
+
 		// Check if it's a "not found" error
 		if err.Error() == fmt.Sprintf("review with ID %d not found", id) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
@@ -84,7 +84,7 @@ func (h *ReviewHandler) GetReviewByID(c fiber.Ctx) error {
 				Message: fmt.Sprintf("Review with ID %d not found", id),
 			})
 		}
-		
+
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error:   "internal_error",
 			Message: "Failed to get review",

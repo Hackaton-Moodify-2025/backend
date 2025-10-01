@@ -1,6 +1,5 @@
 package main
 
-
 import (
 	"context"
 	"fmt"
@@ -122,8 +121,8 @@ func setupMiddleware(app *fiber.App, log *logger.Logger) {
 
 	// Rate limiting middleware
 	app.Use(limiter.New(limiter.Config{
-		Max:        100,                // Max requests per window
-		Expiration: time.Minute,        // Window duration
+		Max:        100,         // Max requests per window
+		Expiration: time.Minute, // Window duration
 		KeyGenerator: func(c fiber.Ctx) string {
 			return c.IP()
 		},
@@ -147,7 +146,7 @@ func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler) {
 
 	// API routes
 	api := app.Group("/api/v1")
-	
+
 	// Reviews routes
 	api.Get("/reviews", reviewHandler.GetReviews)
 	api.Get("/reviews/:id", reviewHandler.GetReviewByID)

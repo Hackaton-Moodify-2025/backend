@@ -75,3 +75,28 @@ type HealthResponse struct {
 	Timestamp time.Time `json:"timestamp"`
 	Version   string    `json:"version"`
 }
+
+// ML Prediction Models
+
+// ReviewInput represents input data for ML prediction
+type ReviewInput struct {
+	ID   int    `json:"id"`
+	Text string `json:"text"`
+}
+
+// PredictRequest represents request to ML service
+type PredictRequest struct {
+	Data []ReviewInput `json:"data"`
+}
+
+// ReviewPredictionOutput represents ML prediction output for a single review
+type ReviewPredictionOutput struct {
+	ID         int      `json:"id"`
+	Topics     []string `json:"topics"`
+	Sentiments []string `json:"sentiments"`
+}
+
+// PredictResponse represents response from ML service
+type PredictResponse struct {
+	Predictions []ReviewPredictionOutput `json:"predictions"`
+}

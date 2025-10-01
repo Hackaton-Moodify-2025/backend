@@ -50,6 +50,7 @@ func main() {
 
 	// Initialize handlers
 	reviewHandler := handlers.NewReviewHandler(reviewService, log)
+	mlHandler := handlers.NewMLHandler(log)
 
 	// Create Fiber app with configuration
 	app := fiber.New(fiber.Config{
@@ -64,7 +65,7 @@ func main() {
 	setupMiddleware(app, log)
 
 	// Setup routes
-	setupRoutes(app, reviewHandler)
+	setupRoutes(app, reviewHandler, mlHandler)
 
 	// Start server in goroutine
 	go func() {
@@ -140,7 +141,7 @@ func setupMiddleware(app *fiber.App, log *logger.Logger) {
 }
 
 // setupRoutes configures all routes
-func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler) {
+func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler, mlHandler *handlers.MLHandler) {
 	// Health check
 	app.Get("/health", reviewHandler.HealthCheck)
 
@@ -151,6 +152,12 @@ func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler) {
 	api.Get("/reviews", reviewHandler.GetReviews)
 	api.Get("/reviews/:id", reviewHandler.GetReviewByID)
 	api.Get("/analytics", reviewHandler.GetAnalytics)
+
+	// ML prediction routes
+	ml := api.Group("/ml")
+	ml.Post("/predict", mlHandler.PredictReviews)
+	ml.Get("/health", mlHandler.GetMLServiceHealth)
+	ml.Get("/topics", mlHandler.GetMLTopics)
 
 	// Catch-all for 404
 	app.Use("*", func(c fiber.Ctx) error {

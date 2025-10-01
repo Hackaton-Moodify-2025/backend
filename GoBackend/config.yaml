@@ -19,14 +19,3 @@ logger:
   format: "console"       # console, json
   output_path: ""         # empty for stdout only, or specify file path like "logs/app.log"
 
-# Database configuration (for future use)
-database:
-  driver: "postgres"
-  host: "localhost"
-  port: 5432
-  name: "reviews_db"
-  user: "postgres"
-  password: ""
-  max_open_conns: 25
-  max_idle_conns: 5
-  conn_max_lifetime: 5    # minutes

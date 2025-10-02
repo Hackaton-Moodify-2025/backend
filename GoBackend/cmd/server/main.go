@@ -157,7 +157,6 @@ func setupRoutes(app *fiber.App, reviewHandler *handlers.ReviewHandler, mlHandle
 	ml := api.Group("/ml")
 	ml.Post("/predict", mlHandler.PredictReviews)
 	ml.Get("/health", mlHandler.GetMLServiceHealth)
-	ml.Get("/topics", mlHandler.GetMLTopics)
 
 	// Catch-all for 404
 	app.Use("*", func(c fiber.Ctx) error {

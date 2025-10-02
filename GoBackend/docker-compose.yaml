@@ -23,11 +23,11 @@ services:
       - reviews-network
     restart: unless-stopped
 
-  # ML Service (Python FastAPI) - PRODUCTION
+  # ML Service (Python FastAPI) - FIXED MODEL (banking_topics_mlflow_light)
   ml-service:
     build:
       context: ../../ml_service
-      dockerfile: Dockerfile.production
+      dockerfile: Dockerfile
     networks:
       - reviews-network
     restart: unless-stopped
@@ -36,6 +36,7 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+      start_period: 60s
 
 networks:
   reviews-network:

@@ -185,38 +185,3 @@ func (h *MLHandler) GetMLServiceHealth(c fiber.Ctx) error {
 
 	return c.JSON(healthResponse)
 }
-
-// GetMLTopics handles GET /api/v1/ml/topics
-func (h *MLHandler) GetMLTopics(c fiber.Ctx) error {
-	mlURL := fmt.Sprintf("%s/topics", h.mlServiceURL)
-
-	resp, err := h.httpClient.Get(mlURL)
-	if err != nil {
-		h.logger.WithError(err).Error("Failed to get ML topics")
-		return c.Status(fiber.StatusServiceUnavailable).JSON(models.ErrorResponse{
-			Error:   "ml_service_unavailable",
-			Message: "Cannot connect to ML service",
-		})
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		h.logger.WithError(err).Error("Failed to read ML topics response")
-		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error:   "internal_error",
-			Message: "Failed to read ML topics response",
-		})
-	}
-
-	var topicsResponse map[string]interface{}
-	if err := json.Unmarshal(body, &topicsResponse); err != nil {
-		h.logger.WithError(err).Error("Failed to parse ML topics response")
-		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error:   "internal_error",
-			Message: "Failed to parse ML topics response",
-		})
-	}
-
-	return c.JSON(topicsResponse)
-}

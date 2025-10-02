@@ -112,7 +112,7 @@ func setupMiddleware(app *fiber.App, log *logger.Logger) {
 		AllowMethods:     []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
 		AllowHeaders:     []string{"*"},
 		AllowCredentials: false, // должно быть false когда AllowOrigins = "*"
-		MaxAge:           86400,  // 24 hours
+		MaxAge:           86400, // 24 hours
 	}))
 
 	// Compression middleware

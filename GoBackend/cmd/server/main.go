@@ -106,13 +106,13 @@ func setupMiddleware(app *fiber.App, log *logger.Logger) {
 	// Security middleware
 	app.Use(helmet.New())
 
-	// CORS middleware
+	// CORS middleware - разрешаем все источники
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:5173", "https://your-frontend-domain.com"},
+		AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"GET", "POST", "HEAD", "PUT", "DELETE", "PATCH", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization", "X-Requested-With"},
-		AllowCredentials: true,
-		MaxAge:           86400, // 24 hours
+		AllowHeaders:     []string{"*"},
+		AllowCredentials: false, // должно быть false когда AllowOrigins = "*"
+		MaxAge:           86400,  // 24 hours
 	}))
 
 	// Compression middleware
